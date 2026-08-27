@@ -1,0 +1,15 @@
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.3
+Flask-Bcrypt==1.0.1
+Flask-WTF==1.2.1
+WTForms==3.1.2
+email-validator==2.1.1
+Pillow==10.4.0
+python-dotenv==1.0.1
+
+# Optional - only needed if you switch DATABASE_URL to MySQL
+PyMySQL==1.1.0
+
+# Optional - only needed if you enable live Razorpay payments
+razorpay==1.4.2

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Restaurants{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="fw-bold mb-3">All Restaurants</h3>
+
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-md-8">
+            <input type="text" name="q" value="{{ search }}" class="form-control" placeholder="Search restaurants...">
+        </div>
+        <div class="col-md-3">
+            <select name="cuisine" class="form-select" onchange="this.form.submit()">
+                <option value="">All Cuisines</option>
+                {% for c in cuisines %}
+                <option value="{{ c }}" {% if c == selected_cuisine %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-1">
+            <button class="btn btn-primary-brand w-100" type="submit"><i class="fa-solid fa-filter"></i></button>
+        </div>
+    </form>
+
+    <div class="row g-4">
+        {% for r in restaurants %}
+        <div class="col-md-4 col-sm-6">
+            <a href="{{ url_for('main.restaurant_detail', restaurant_id=r.id) }}" class="text-decoration-none text-dark">
+                <div class="card restaurant-card">
+                    <img src="{{ url_for('static', filename=r.image) }}" alt="{{ r.name }}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="card-title mb-1">{{ r.name }}</h5>
+                            <span class="rating-pill"><i class="fa-solid fa-star"></i> {{ r.average_rating }}</span>
+                        </div>
+                        <p class="text-muted small mb-1">{{ r.cuisine_type }}</p>
+                        <p class="text-muted small mb-0">{{ r.address }}</p>
+                        <p class="mb-0 mt-1">
+                            {% if r.is_active %}
+                                <span class="badge bg-success-subtle text-success">Open now</span>
+                            {% else %}
+                                <span class="badge bg-danger-subtle text-danger">Closed</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% else %}
+        <p class="text-muted">No restaurants match your search.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

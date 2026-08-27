@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card border-0 shadow-sm p-4" style="max-width: 600px; margin: 0 auto;">
+        <h4 class="fw-bold mb-1">{{ title }}</h4>
+        <p class="text-muted small mb-4">{{ restaurant.name }}</p>
+        <form method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control") }}
+            </div>
+            <div class="mb-3">
+                {{ form.description.label(class="form-label") }}
+                {{ form.description(class="form-control", rows=2) }}
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form.price.label(class="form-label") }}
+                    {{ form.price(class="form-control") }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form.category.label(class="form-label") }}
+                    {{ form.category(class="form-select") }}
+                </div>
+            </div>
+            <div class="mb-3">
+                {{ form.preparation_time.label(class="form-label") }}
+                {{ form.preparation_time(class="form-control") }}
+            </div>
+            <div class="form-check mb-2">
+                {{ form.is_veg(class="form-check-input") }}
+                {{ form.is_veg.label(class="form-check-label") }}
+            </div>
+            <div class="form-check mb-3">
+                {{ form.is_available(class="form-check-input") }}
+                {{ form.is_available.label(class="form-check-label") }}
+            </div>
+            {{ form.submit(class="btn btn-primary-brand w-100") }}
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Payment{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card auth-card p-4 text-center">
+        <i class="fa-solid fa-lock fa-2x text-muted mb-3"></i>
+        <h5 class="fw-bold">Complete Your Payment</h5>
+        <p class="text-muted">Order <strong>{{ order.order_number }}</strong></p>
+        <h2 class="fw-bold my-3">{{ order.total_amount | currency }}</h2>
+
+        {% if razorpay_enabled %}
+        <button id="rzp-button" class="btn btn-primary-brand w-100 py-2">
+            <i class="fa-brands fa-cc-visa me-1"></i> Pay with Razorpay
+        </button>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <script>
+            var options = {
+                "key": "{{ razorpay_key_id }}",
+                "amount": "{{ amount_paise }}",
+                "currency": "INR",
+                "name": "FoodExpress",
+                "description": "Order {{ order.order_number }}",
+                "handler": function (response) {
+                    var form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = "{{ url_for('orders.confirm_payment', order_id=order.id) }}";
+
+                    var csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = 'csrf_token';
+                    csrfInput.value = "{{ csrf_token() }}";
+                    form.appendChild(csrfInput);
+
+                    var payIdInput = document.createElement('input');
+                    payIdInput.type = 'hidden';
+                    payIdInput.name = 'razorpay_payment_id';
+                    payIdInput.value = response.razorpay_payment_id;
+                    form.appendChild(payIdInput);
+
+                    document.body.appendChild(form);
+                    form.submit();
+                },
+                "theme": { "color": "#FF6B35" }
+            };
+            var rzp = new Razorpay(options);
+            document.getElementById('rzp-button').onclick = function (e) {
+                rzp.open();
+                e.preventDefault();
+            };
+        </script>
+        {% else %}
+        <div class="alert alert-info text-start small">
+            <strong>Demo Mode:</strong> Live Razorpay keys are not configured (<code>RAZORPAY_ENABLED=false</code>).
+            Click below to simulate a successful payment and continue testing the order flow.
+        </div>
+        <form method="post" action="{{ url_for('orders.confirm_payment', order_id=order.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-primary-brand w-100 py-2">
+                <i class="fa-solid fa-check me-1"></i> Simulate Successful Payment
+            </button>
+        </form>
+        {% endif %}
+
+        <a href="{{ url_for('main.index') }}" class="text-muted small mt-3">Cancel and return home</a>
+    </div>
+</div>
+{% endblock %}

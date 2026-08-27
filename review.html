@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Rate Your Order{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card auth-card p-4">
+        <h5 class="fw-bold mb-1">Rate your order</h5>
+        <p class="text-muted small mb-4">{{ order.restaurant.name }} · {{ order.order_number }}</p>
+        <form method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.rating.label(class="form-label") }}
+                {{ form.rating(class="form-select") }}
+            </div>
+            <div class="mb-3">
+                {{ form.delivery_rating.label(class="form-label") }}
+                {{ form.delivery_rating(class="form-select") }}
+            </div>
+            <div class="mb-3">
+                {{ form.comment.label(class="form-label") }}
+                {{ form.comment(class="form-control", rows=3) }}
+            </div>
+            {{ form.submit(class="btn btn-primary-brand w-100") }}
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card border-0 shadow-sm p-4" style="max-width: 700px; margin: 0 auto;">
+        <h4 class="fw-bold mb-4">{{ title }}</h4>
+        <form method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control") }}
+            </div>
+            <div class="mb-3">
+                {{ form.description.label(class="form-label") }}
+                {{ form.description(class="form-control", rows=2) }}
+            </div>
+            <div class="mb-3">
+                {{ form.address.label(class="form-label") }}
+                {{ form.address(class="form-control", rows=2) }}
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form.phone.label(class="form-label") }}
+                    {{ form.phone(class="form-control") }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(class="form-control") }}
+                </div>
+            </div>
+            <div class="mb-3">
+                {{ form.cuisine_type.label(class="form-label") }}
+                {{ form.cuisine_type(class="form-control", placeholder="E.g. Indian, Chinese, Italian") }}
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form.opening_time.label(class="form-label") }}
+                    {{ form.opening_time(class="form-control", placeholder="09:00") }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form.closing_time.label(class="form-label") }}
+                    {{ form.closing_time(class="form-control", placeholder="23:00") }}
+                </div>
+            </div>
+            <div class="form-check mb-3">
+                {{ form.is_active(class="form-check-input") }}
+                {{ form.is_active.label(class="form-check-label") }}
+            </div>
+            {{ form.submit(class="btn btn-primary-brand w-100") }}
+        </form>
+    </div>
+</div>
+{% endblock %}

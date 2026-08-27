@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Delivery Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="fw-bold mb-4"><i class="fa-solid fa-motorcycle me-2"></i>Delivery Dashboard</h3>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card dashboard-stat p-3 text-center">
+                <h3 class="fw-bold mb-0">{{ available_orders | length }}</h3>
+                <small class="text-muted">Available Orders</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card dashboard-stat p-3 text-center">
+                <h3 class="fw-bold mb-0">{{ my_active_orders | length }}</h3>
+                <small class="text-muted">Active Deliveries</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card dashboard-stat p-3 text-center">
+                <h3 class="fw-bold mb-0">{{ my_history | length }}</h3>
+                <small class="text-muted">Completed (recent)</small>
+            </div>
+        </div>
+    </div>
+
+    <h5 class="fw-bold mb-3">Available for Pickup</h5>
+    {% if available_orders %}
+    <div class="row g-3 mb-4">
+        {% for order in available_orders %}
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm p-3">
+                <div class="d-flex justify-content-between">
+                    <strong>{{ order.order_number }}</strong>
+                    <span class="badge bg-primary">Ready</span>
+                </div>
+                <p class="small text-muted mb-1 mt-2"><i class="fa-solid fa-store me-1"></i>{{ order.restaurant.name }}</p>
+                <p class="small text-muted mb-2"><i class="fa-solid fa-location-dot me-1"></i>{{ order.delivery_address }}</p>
+                <p class="fw-bold mb-2">{{ order.total_amount | currency }} <span class="text-muted small fw-normal">({{ order.payment_method.upper() }})</span></p>
+                <form method="post" action="{{ url_for('delivery.accept_order', order_id=order.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-sm btn-primary-brand w-100">Accept Delivery</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted mb-4">No orders ready for pickup right now.</p>
+    {% endif %}
+
+    <h5 class="fw-bold mb-3">My Active Deliveries</h5>
+    {% if my_active_orders %}
+    <div class="row g-3 mb-4">
+        {% for order in my_active_orders %}
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm p-3">
+                <div class="d-flex justify-content-between">
+                    <strong>{{ order.order_number }}</strong>
+                    <span class="badge status-badge-orange">Out for Delivery</span>
+                </div>
+                <p class="small text-muted mb-1 mt-2"><i class="fa-solid fa-store me-1"></i>{{ order.restaurant.name }}</p>
+                <p class="small text-muted mb-2"><i class="fa-solid fa-location-dot me-1"></i>{{ order.delivery_address }}</p>
+                <p class="fw-bold mb-2">{{ order.total_amount | currency }} <span class="text-muted small fw-normal">({{ order.payment_method.upper() }})</span></p>
+                <form method="post" action="{{ url_for('delivery.mark_delivered', order_id=order.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-sm btn-success w-100">Mark as Delivered</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted mb-4">No active deliveries.</p>
+    {% endif %}
+
+    <h5 class="fw-bold mb-3">Delivery History</h5>
+    {% if my_history %}
+    <div class="table-responsive">
+        <table class="table table-sm align-middle bg-white shadow-sm rounded">
+            <thead><tr><th>Order</th><th>Restaurant</th><th>Delivered</th><th>Amount</th></tr></thead>
+            <tbody>
+            {% for order in my_history %}
+                <tr>
+                    <td>{{ order.order_number }}</td>
+                    <td>{{ order.restaurant.name }}</td>
+                    <td>{{ order.actual_delivery_time.strftime('%d %b, %I:%M %p') if order.actual_delivery_time else '-' }}</td>
+                    <td>{{ order.total_amount | currency }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted">No completed deliveries yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
